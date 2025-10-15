@@ -65,12 +65,6 @@ jobs:
           --exclude "deploy-s3.sh" \
           --delete
           
-    - name: Invalidate CloudFront
-      if: ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID != '' }}
-      run: |
-        aws cloudfront create-invalidation \
-          --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} \
-          --paths "/*"
           
     - name: Health Check
       run: |
