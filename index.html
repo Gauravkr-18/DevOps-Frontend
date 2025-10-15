@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Workshop Enrollment Platform</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Configuration Script - Load before main script -->
+    <script src="config.js"></script>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <h2>🎓 Workshop Hub</h2>
+            </div>
+            <div class="nav-links" id="navLinks">
+                <a href="#" class="nav-link active" data-page="home">Workshops</a>
+                <a href="#" class="nav-link" data-page="wishlist" id="wishlistLink" style="display: none;">Wishlist</a>
+                <a href="#" class="nav-link" data-page="dashboard" id="dashboardLink" style="display: none;">Dashboard</a>
+            </div>
+            <div class="nav-auth" id="navAuth">
+                <button class="btn btn-outline" id="loginBtn">Login</button>
+                <button class="btn btn-primary" id="signupBtn">Sign Up</button>
+            </div>
+            <div class="nav-user" id="navUser" style="display: none;">
+                <span class="user-name" id="userName"></span>
+                <button class="btn btn-outline" id="logoutBtn">Logout</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="main-container">
+        <!-- Home Page - Workshops Listing -->
+        <div id="homePage" class="page active">
+            <!-- Hero Section -->
+            <section class="hero">
+                <div class="hero-content">
+                    <h1 class="hero-title">Explore Our Workshops</h1>
+                    <p class="hero-subtitle">Select a specialization to find hands-on workshops designed to elevate your skills.</p>
+                </div>
+            </section>
+
+            <!-- Category Tabs -->
+            <section class="category-section">
+                <div class="tab-container" id="categoryTabs">
+                    <button class="tab-btn active" data-category="all">All Technologies</button>
+                    <!-- Dynamic category tabs will be inserted here -->
+                </div>
+            </section>
+
+            <!-- Search and Filter -->
+            <section class="filter-section">
+                <div class="filter-container">
+                    <input type="text" id="searchInput" class="search-input" placeholder="Search workshops...">
+                    <select id="difficultyFilter" class="filter-select">
+                        <option value="">All Levels</option>
+                        <option value="beginner">Beginner</option>
+                        <option value="intermediate">Intermediate</option>
+                        <option value="advanced">Advanced</option>
+                    </select>
+                </div>
+            </section>
+
+            <!-- Workshops Grid -->
+            <section class="workshops-section">
+                <div class="workshops-grid" id="workshopsGrid">
+                    <!-- Workshop cards will be dynamically inserted here -->
+                </div>
+                <div id="noWorkshops" class="empty-state" style="display: none;">
+                    <p>No workshops found. Try adjusting your filters.</p>
+                </div>
+            </section>
+        </div>
+
+        <!-- Wishlist Page -->
+        <div id="wishlistPage" class="page">
+            <section class="dashboard-section">
+                <h2 class="section-title">My Wishlist</h2>
+                <div id="wishlistContent">
+                    <div class="empty-state" id="emptyWishlist">
+                        <p>Your wishlist is empty. Add some workshops to get started!</p>
+                        <button class="btn btn-primary" onclick="showPage('home')">Browse Workshops</button>
+                    </div>
+                    <div id="wishlistGrid" class="workshop-grid" style="display: none;"></div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Dashboard Page -->
+        <div id="dashboardPage" class="page">
+            <section class="dashboard-section">
+                <h2 class="section-title">My Dashboard</h2>
+                
+                <div class="dashboard-stats">
+                    <div class="stat-card">
+                        <div class="stat-icon">📚</div>
+                        <div class="stat-info">
+                            <h3 id="totalEnrollments">0</h3>
+                            <p>Enrolled Workshops</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">✅</div>
+                        <div class="stat-info">
+                            <h3 id="completedCount">0</h3>
+                            <p>Completed</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">⏳</div>
+                        <div class="stat-info">
+                            <h3 id="activeCount">0</h3>
+                            <p>Active</p>
+                        </div>
+                    </div>
+                </div>
+
+                <h3 class="subsection-title">My Enrolled Workshops</h3>
+                <div class="enrolled-workshops" id="enrolledWorkshops">
+                    <!-- Enrolled workshops will be inserted here -->
+                </div>
+                <div id="noEnrollments" class="empty-state">
+                    <p>You haven't enrolled in any workshops yet. Start learning today!</p>
+                    <button class="btn btn-primary" onclick="showPage('home')">Browse Workshops</button>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <!-- Login Modal -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <span class="close" data-modal="loginModal">&times;</span>
+            <h2>Login to Your Account</h2>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="loginUsername">Username</label>
+                    <input type="text" id="loginUsername" name="username" required>
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword">Password</label>
+                    <input type="password" id="loginPassword" name="password" required>
+                </div>
+                <div id="loginError" class="error-message"></div>
+                <button type="submit" class="btn btn-primary btn-block">Login</button>
+            </form>
+            <p class="modal-footer">
+                Don't have an account? <a href="#" id="switchToSignup">Sign up</a> | 
+                <a href="#" id="forgotPasswordLink">Forgot Password?</a>
+            </p>
+        </div>
+    </div>
+
+    <!-- Forgot Password Modal -->
+    <div id="forgotPasswordModal" class="modal">
+        <div class="modal-content">
+            <span class="close" data-modal="forgotPasswordModal">&times;</span>
+            <div id="forgotPasswordStep1">
+                <h2>Reset Password</h2>
+                <p style="color: #94a3b8; margin-bottom: 20px;">Enter your username and email to verify your identity.</p>
+                <form id="forgotPasswordForm">
+                    <div class="form-group">
+                        <label for="forgotUsername">Username</label>
+                        <input type="text" id="forgotUsername" name="username" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="forgotEmail">Email</label>
+                        <input type="email" id="forgotEmail" name="email" required>
+                    </div>
+                    <div id="forgotPasswordError" class="error-message"></div>
+                    <button type="submit" class="btn btn-primary btn-block">Verify Identity</button>
+                </form>
+                <p class="modal-footer">Remember your password? <a href="#" id="backToLogin">Login</a></p>
+            </div>
+            
+            <div id="forgotPasswordStep2" style="display: none;">
+                <h2>Set New Password</h2>
+                <p style="color: #94a3b8; margin-bottom: 20px;">Identity verified! Enter your new password.</p>
+                <form id="resetPasswordForm">
+                    <div class="form-group">
+                        <label for="newPassword">New Password</label>
+                        <input type="password" id="newPassword" name="new_password" required minlength="6">
+                    </div>
+                    <div class="form-group">
+                        <label for="confirmNewPassword">Confirm New Password</label>
+                        <input type="password" id="confirmNewPassword" name="confirm_password" required minlength="6">
+                    </div>
+                    <div id="resetPasswordMessage" class="success-message" style="display: none;"></div>
+                    <div id="resetPasswordError" class="error-message"></div>
+                    <button type="submit" class="btn btn-primary btn-block">Reset Password</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Signup Modal -->
+    <div id="signupModal" class="modal">
+        <div class="modal-content">
+            <span class="close" data-modal="signupModal">&times;</span>
+            <h2>Create Your Account</h2>
+            <form id="signupForm">
+                <div class="form-group">
+                    <label for="signupUsername">Username</label>
+                    <input type="text" id="signupUsername" name="username" required>
+                </div>
+                <div class="form-group">
+                    <label for="signupEmail">Email</label>
+                    <input type="email" id="signupEmail" name="email" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="signupFirstName">First Name</label>
+                        <input type="text" id="signupFirstName" name="first_name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="signupLastName">Last Name</label>
+                        <input type="text" id="signupLastName" name="last_name" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="signupPassword">Password</label>
+                    <input type="password" id="signupPassword" name="password" required minlength="6">
+                </div>
+                <div class="form-group">
+                    <label for="signupPassword2">Confirm Password</label>
+                    <input type="password" id="signupPassword2" name="password2" required minlength="6">
+                </div>
+                <div id="signupError" class="error-message"></div>
+                <button type="submit" class="btn btn-primary btn-block">Sign Up</button>
+            </form>
+            <p class="modal-footer">Already have an account? <a href="#" id="switchToLogin">Login</a></p>
+        </div>
+    </div>
+
+    <!-- Workshop Detail Modal -->
+    <div id="workshopModal" class="modal">
+        <div class="modal-content modal-large">
+            <span class="close" data-modal="workshopModal">&times;</span>
+            <div id="workshopDetail">
+                <!-- Workshop details will be inserted here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Review Modal -->
+    <div id="reviewModal" class="modal">
+        <div class="modal-content">
+            <span class="close" data-modal="reviewModal">&times;</span>
+            <h2>Write a Review</h2>
+            <div id="reviewWorkshopTitle" style="color: #94a3b8; margin-bottom: 20px;"></div>
+            <form id="reviewForm">
+                <div class="form-group">
+                    <label>Rating</label>
+                    <div class="star-rating" id="starRating">
+                        <span class="star" data-rating="1">☆</span>
+                        <span class="star" data-rating="2">☆</span>
+                        <span class="star" data-rating="3">☆</span>
+                        <span class="star" data-rating="4">☆</span>
+                        <span class="star" data-rating="5">☆</span>
+                    </div>
+                    <input type="hidden" id="ratingValue" name="rating" required>
+                </div>
+                <div class="form-group">
+                    <label for="reviewComment">Review</label>
+                    <textarea id="reviewComment" name="comment" rows="4" placeholder="Share your experience with this workshop..." required></textarea>
+                </div>
+                <div id="reviewError" class="error-message"></div>
+                <button type="submit" class="btn btn-primary btn-block">Submit Review</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
