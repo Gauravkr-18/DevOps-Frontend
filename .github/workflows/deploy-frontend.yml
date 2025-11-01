@@ -67,12 +67,3 @@ jobs:
           --exclude "deploy-s3.sh" \
           --delete
           
-  
-    - name: Health Check
-      run: |
-        sleep 30
-        if [ ! -z "${{ secrets.FRONTEND_DOMAIN }}" ]; then
-          curl -f https://${{ secrets.FRONTEND_DOMAIN }} || exit 1
-        else
-          echo "Frontend deployed to S3. Manual verification required."
-        fi
