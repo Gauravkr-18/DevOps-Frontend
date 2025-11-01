@@ -9,7 +9,7 @@ const API_BASE_URL = (() => {
     }
     
     // Production: Use configured backend URL or fallback
-    const backendUrl = window.BACKEND_URL || 'https://your-backend-domain.com/api';
+    const backendUrl = window.BACKEND_URL || 'http://65.1.93.203:8000/api';
     console.log('Production mode detected - using backend:', backendUrl);
     return backendUrl;
 })();
