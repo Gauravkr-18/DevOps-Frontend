@@ -8,10 +8,14 @@ const API_BASE_URL = (() => {
         return 'http://127.0.0.1:8000/api';
     }
     
-    // Production: Use configured backend URL or fallback
-    const backendUrl = window.BACKEND_URL || 'http://65.1.93.203:8000/api';
+    // Production: Use configured backend URL
+    const backendUrl = window.BACKEND_URL;
+    if (!backendUrl) {
+        console.error('ERROR: BACKEND_URL is not configured!');
+        console.error('Please set BACKEND_URL secret in GitHub Actions');
+    }
     console.log('Production mode detected - using backend:', backendUrl);
-    return backendUrl;
+    return backendUrl || 'http://65.1.93.203:8000/api';
 })();
 
 // Log configuration for debugging
