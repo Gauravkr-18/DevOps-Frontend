@@ -44,8 +44,10 @@ jobs:
       with:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-bucket: ${{ secrets.AWS_S3_BUCKET }}
         aws-region: 'ap-south-1'
-
+        
+        
     - name: Update config with backend URL
       run: |
         cat > config.js << EOF
@@ -65,5 +67,12 @@ jobs:
           --exclude "deploy-s3.sh" \
           --delete
           
-          
   
+    - name: Health Check
+      run: |
+        sleep 30
+        if [ ! -z "${{ secrets.FRONTEND_DOMAIN }}" ]; then
+          curl -f https://${{ secrets.FRONTEND_DOMAIN }} || exit 1
+        else
+          echo "Frontend deployed to S3. Manual verification required."
+        fi
